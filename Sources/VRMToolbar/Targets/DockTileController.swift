@@ -16,7 +16,7 @@ final class DockTileController {
 
     private func sync() {
         let hasDock = !store.displays.items(for: .dock).isEmpty
-        let policy: NSApplication.ActivationPolicy = hasDock ? .regular : .accessory
+        let policy: NSApplication.ActivationPolicy = hasDock || store.displays.alwaysShowDockIcon ? .regular : .accessory
         if NSApp.activationPolicy() != policy { NSApp.setActivationPolicy(policy) }
         _ = store.metrics; _ = store.lastUpdate  // track
         NSApp.dockTile.contentView = hasDock ? host : nil

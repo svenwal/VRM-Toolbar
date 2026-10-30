@@ -21,7 +21,8 @@ struct GeneralPage: View {
                         do { on ? try SMAppService.mainApp.register() : try SMAppService.mainApp.unregister() }
                         catch { launchAtLogin = SMAppService.mainApp.status == .enabled }
                     }
-                Text("The Dock icon appears only while at least one display targets the Dock.")
+                Toggle("Always show Dock icon", isOn: $displays.alwaysShowDockIcon)
+                Text("When off, the Dock icon appears only while at least one display targets the Dock.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             .padding(20).frame(maxWidth: .infinity, alignment: .leading).glassCard()

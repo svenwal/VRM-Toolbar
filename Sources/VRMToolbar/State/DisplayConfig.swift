@@ -154,10 +154,13 @@ final class DisplayStore {
     var items: [DisplayItem] { didSet { save() } }
     var windows: [FloatingWindowConfig] { didSet { save() } }
     var refreshInterval: TimeInterval { didSet { UserDefaults.standard.set(refreshInterval, forKey: Self.intervalKey) } }
+    /// Keep the Dock icon visible even when no display targets the Dock (default on).
+    var alwaysShowDockIcon: Bool { didSet { UserDefaults.standard.set(alwaysShowDockIcon, forKey: Self.dockKey) } }
 
     private static let itemsKey = "displays.v1"
     private static let windowsKey = "floatingWindows.v1"
     private static let intervalKey = "refreshInterval"
+    private static let dockKey = "alwaysShowDockIcon"
     private static let legacyOpacityKey = "floatingOpacity"
 
     init() {
@@ -177,6 +180,7 @@ final class DisplayStore {
             if let o = defaults.object(forKey: Self.legacyOpacityKey) as? Double { first.style.opacity = min(max(o, 0.1), 1) }
             self.windows = [first]
         }
+        alwaysShowDockIcon = defaults.object(forKey: Self.dockKey) as? Bool ?? true
         let i = defaults.double(forKey: Self.intervalKey)
         refreshInterval = i == 0 ? 60 : min(max(i, 30), 600)
     }

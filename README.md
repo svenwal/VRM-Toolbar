@@ -26,3 +26,7 @@ The website lives in [`docs/`](docs) and is served by GitHub Pages.
 
 ---
 Independent project, not affiliated with or endorsed by Victron Energy. “Victron” and “VRM” are trademarks of their respective owners.
+
+## License
+
+[MIT](LICENSE)

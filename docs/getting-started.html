@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started · VRM Toolbar</title>
+<meta name="description" content="From download to your first live battery readout in about five minutes.">
+<meta name="theme-color" content="#080d1c">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head><body><header class="topbar glass">
+<a class="brand" href="index.html"><img src="assets/icon.png" alt="">VRM Toolbar</a>
+<nav><a class="hide-sm" href="index.html">Home</a><a class=" on" href="getting-started.html">Docs</a><a class="" href="https://github.com/svenwal/VRM-Toolbar">GitHub</a></nav>
+</header>
+<div class="docs"><aside class="side glass"><h5>Documentation</h5><a class="on" href="getting-started.html"><span>🚀</span>Getting started</a><a class="" href="account.html"><span>🔑</span>Account & access token</a><a class="" href="displays.html"><span>📊</span>Displays</a><a class="" href="windows.html"><span>🪟</span>Floating windows</a><a class="" href="live-and-history.html"><span>⚡</span>Live data & history</a><a class="" href="settings.html"><span>⚙️</span>General settings</a><a class="" href="build.html"><span>🛠</span>Build from source</a><a class="" href="troubleshooting.html"><span>🩺</span>Troubleshooting & privacy</a></aside>
+<main class="doc glass"><h1>Getting started</h1><p class="lede">From download to your first live battery readout in about five minutes.</p>
+<h2>What you need</h2>
+<ul><li>A Mac running <b>macOS 14 Sonoma or newer</b>. Liquid Glass styling is used on macOS 26 and falls back to system materials on older versions.</li>
+<li>A Victron installation that reports to the <b>VRM portal</b> (a GX device such as a Cerbo GX, or a VRM-connected Venus OS).</li>
+<li>A VRM account. An access token is recommended.</li></ul>
+<h2>1. Install</h2>
+<p>There are no prebuilt releases yet, so build the app yourself. It takes one command and needs the Xcode command line tools:</p>
+<pre><code>git clone https://github.com/svenwal/VRM-Toolbar.git
+cd VRM-Toolbar
+./scripts/bundle.sh
+open build/VRMToolbar.app</code></pre>
+<p>See <a href="build.html">Build from source</a> for details, including code signing.</p>
+<h2>2. Sign in</h2>
+<p>On first launch the settings window opens on the <b>Account</b> page. Paste a VRM access token (<a href="account.html">how to create one</a>) and press <b>Sign in</b>. The app reads your installations and starts listening for values.</p>
+<h2>3. Add a display</h2>
+<ol><li>Open <b>Displays</b> and press <b>Add display</b>.</li>
+<li>Choose <b>Show in</b>: Menu bar, Dock icon or Floating window.</li>
+<li>Pick a value from the list, for example <i>Battery state of charge</i>. Values marked with ⚡ are streamed live.</li>
+<li>Optionally set a label, unit or SF Symbol.</li></ol>
+<p>It appears immediately. Add as many as you like, and drag them to reorder.</p>
+<div class="note"><b>Tip</b>Add a battery state of charge value to make the whole app react to it. The Overview ring and the animated background shift from green to amber to red as the charge drops.</div>
+<h2>Where it lives</h2>
+<p>VRM Toolbar is a menu bar app. It has no Dock icon unless a display targets the Dock. Click the menu bar value for the current readings, <i>Refresh</i>, <i>Settings…</i> and <i>Quit</i>.</p>
+
+<div class="pager"><span></span><a href="account.html">Account & access token →</a></div></main></div><footer><span>VRM Toolbar is an independent open-source project. Not affiliated with or endorsed by Victron Energy. “Victron”, “VRM” and “Cerbo GX” are trademarks of their respective owners.</span>
+<span><a href="https://github.com/svenwal/VRM-Toolbar">Source on GitHub</a></span></footer></body></html>

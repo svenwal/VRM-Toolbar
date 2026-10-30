@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build from source · VRM Toolbar</title>
+<meta name="description" content="VRM Toolbar is a Swift package with no third-party dependencies.">
+<meta name="theme-color" content="#080d1c">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head><body><header class="topbar glass">
+<a class="brand" href="index.html"><img src="assets/icon.png" alt="">VRM Toolbar</a>
+<nav><a class="hide-sm" href="index.html">Home</a><a class=" on" href="getting-started.html">Docs</a><a class="" href="https://github.com/svenwal/VRM-Toolbar">GitHub</a></nav>
+</header>
+<div class="docs"><aside class="side glass"><h5>Documentation</h5><a class="" href="getting-started.html"><span>🚀</span>Getting started</a><a class="" href="account.html"><span>🔑</span>Account & access token</a><a class="" href="displays.html"><span>📊</span>Displays</a><a class="" href="windows.html"><span>🪟</span>Floating windows</a><a class="" href="live-and-history.html"><span>⚡</span>Live data & history</a><a class="" href="settings.html"><span>⚙️</span>General settings</a><a class="on" href="build.html"><span>🛠</span>Build from source</a><a class="" href="troubleshooting.html"><span>🩺</span>Troubleshooting & privacy</a></aside>
+<main class="doc glass"><h1>Build from source</h1><p class="lede">VRM Toolbar is a Swift package with no third-party dependencies.</p>
+<h2>Requirements</h2>
+<ul><li>macOS 14 or newer</li><li>Xcode 16+ or the matching command line tools (Swift 6 toolchain)</li></ul>
+<h2>Build &amp; run</h2>
+<pre><code>./scripts/bundle.sh          # release build → build/VRMToolbar.app
+open build/VRMToolbar.app</code></pre>
+<p>The script builds a release binary, wraps it in an app bundle (bundle id <code>world.walther.vrm-toolbar</code>) and signs it.</p>
+<h2>Code signing</h2>
+<p>The script picks the first <b>Apple Development</b> identity in your Keychain. Override with:</p>
+<pre><code>SIGN_IDENTITY="Apple Development: Your Name (TEAMID)" ./scripts/bundle.sh</code></pre>
+<p>Without an identity it falls back to an ad-hoc signature. That works, but macOS will ask for Keychain access again after each rebuild.</p>
+<h2>Tests</h2>
+<pre><code>swift test</code></pre>
+<p>Covers configuration decoding, the VRM client and stats parsing, and the MQTT packet codec.</p>
+<h2>Project layout</h2>
+<table><tr><th>Folder</th><th>Contents</th></tr>
+<tr><td><code>API/</code></td><td>VRM REST client and models</td></tr>
+<tr><td><code>Live/</code></td><td>Minimal MQTT-over-WebSocket client and live stream</td></tr>
+<tr><td><code>State/</code></td><td>Metric store, display configuration</td></tr>
+<tr><td><code>History/</code></td><td>History store and hover chart</td></tr>
+<tr><td><code>Targets/</code></td><td>Menu bar, Dock and floating window controllers</td></tr>
+<tr><td><code>UI/</code></td><td>Settings window pages and the glass kit</td></tr></table>
+<h2>App icon</h2>
+<p><code>swift scripts/make_icon.swift</code> redraws <code>Resources/AppIcon.icns</code>.</p>
+
+<div class="pager"><a href="settings.html">← General settings</a><a href="troubleshooting.html">Troubleshooting & privacy →</a></div></main></div><footer><span>VRM Toolbar is an independent open-source project. Not affiliated with or endorsed by Victron Energy. “Victron”, “VRM” and “Cerbo GX” are trademarks of their respective owners.</span>
+<span><a href="https://github.com/svenwal/VRM-Toolbar">Source on GitHub</a></span></footer></body></html>

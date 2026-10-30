@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live data & history · VRM Toolbar</title>
+<meta name="description" content="Values stream in the moment they change, and every value has a chart behind it.">
+<meta name="theme-color" content="#080d1c">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head><body><header class="topbar glass">
+<a class="brand" href="index.html"><img src="assets/icon.png" alt="">VRM Toolbar</a>
+<nav><a class="hide-sm" href="index.html">Home</a><a class=" on" href="getting-started.html">Docs</a><a class="" href="https://github.com/svenwal/VRM-Toolbar">GitHub</a></nav>
+</header>
+<div class="docs"><aside class="side glass"><h5>Documentation</h5><a class="" href="getting-started.html"><span>🚀</span>Getting started</a><a class="" href="account.html"><span>🔑</span>Account & access token</a><a class="" href="displays.html"><span>📊</span>Displays</a><a class="" href="windows.html"><span>🪟</span>Floating windows</a><a class="on" href="live-and-history.html"><span>⚡</span>Live data & history</a><a class="" href="settings.html"><span>⚙️</span>General settings</a><a class="" href="build.html"><span>🛠</span>Build from source</a><a class="" href="troubleshooting.html"><span>🩺</span>Troubleshooting & privacy</a></aside>
+<main class="doc glass"><h1>Live data & history</h1><p class="lede">Values stream in the moment they change, and every value has a chart behind it.</p>
+<h2>Live stream</h2>
+<p>With an access token, VRM Toolbar connects to the VRM MQTT broker over secure WebSockets for each installation. Streamed values (⚡ in the value list) update instantly, with no polling delay. If the connection drops, the app reconnects on its own.</p>
+<h2>Polling</h2>
+<p>The VRM API is polled on a schedule (default every 60 seconds, see <a href="settings.html">General settings</a>). When streaming is active, polling mostly refreshes the list of available values. If you sign in with a password, the app polls only.</p>
+<h2>History chart</h2>
+<p>Hovering a display opens a chart with the last 24 hours. For values VRM stores history for, the data comes from VRM at 15-minute resolution. For anything else the chart is built from samples collected since the app launched. Min, max and average are shown alongside the current value, and the chart uses the window’s typeface and accent colour.</p>
+<h2>Stale data</h2>
+<p>If no fresh data arrives for a while, menu bar items are dimmed so you do not mistake an old number for a current one.</p>
+
+<div class="pager"><a href="windows.html">← Floating windows</a><a href="settings.html">General settings →</a></div></main></div><footer><span>VRM Toolbar is an independent open-source project. Not affiliated with or endorsed by Victron Energy. “Victron”, “VRM” and “Cerbo GX” are trademarks of their respective owners.</span>
+<span><a href="https://github.com/svenwal/VRM-Toolbar">Source on GitHub</a></span></footer></body></html>

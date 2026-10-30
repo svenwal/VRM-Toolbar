@@ -1,0 +1,28 @@
+# VRM Toolbar
+
+Your Victron battery, always in sight. VRM Toolbar shows live values from your [Victron VRM](https://vrm.victronenergy.com) installation in the Mac menu bar, on the Dock icon, or in styled floating windows, with 24‑hour history charts on hover.
+
+**Docs & homepage:** https://svenwal.github.io/VRM-Toolbar/
+
+## Quick start
+
+Requires macOS 14+ and the Xcode command line tools.
+
+```sh
+./scripts/bundle.sh
+open build/VRMToolbar.app
+```
+
+Then sign in with a VRM access token (VRM › Preferences › Integrations) and add displays. See the [documentation](https://svenwal.github.io/VRM-Toolbar/getting-started.html) for details.
+
+## Development
+
+```sh
+swift build
+swift test
+```
+
+The website lives in [`docs/`](docs) and is served by GitHub Pages.
+
+---
+Independent project, not affiliated with or endorsed by Victron Energy. “Victron” and “VRM” are trademarks of their respective owners.

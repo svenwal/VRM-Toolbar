@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account & access token · VRM Toolbar</title>
+<meta name="description" content="Connect VRM Toolbar to your Victron VRM portal securely.">
+<meta name="theme-color" content="#080d1c">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head><body><header class="topbar glass">
+<a class="brand" href="index.html"><img src="assets/icon.png" alt="">VRM Toolbar</a>
+<nav><a class="hide-sm" href="index.html">Home</a><a class=" on" href="getting-started.html">Docs</a><a class="" href="https://github.com/svenwal/VRM-Toolbar">GitHub</a></nav>
+</header>
+<div class="docs"><aside class="side glass"><h5>Documentation</h5><a class="" href="getting-started.html"><span>🚀</span>Getting started</a><a class="on" href="account.html"><span>🔑</span>Account & access token</a><a class="" href="displays.html"><span>📊</span>Displays</a><a class="" href="windows.html"><span>🪟</span>Floating windows</a><a class="" href="live-and-history.html"><span>⚡</span>Live data & history</a><a class="" href="settings.html"><span>⚙️</span>General settings</a><a class="" href="build.html"><span>🛠</span>Build from source</a><a class="" href="troubleshooting.html"><span>🩺</span>Troubleshooting & privacy</a></aside>
+<main class="doc glass"><h1>Account & access token</h1><p class="lede">Connect VRM Toolbar to your Victron VRM portal securely.</p>
+<h2>Access token (recommended)</h2>
+<p>An access token works with two-factor authentication and is required for the live stream.</p>
+<ol><li>Sign in at <code>vrm.victronenergy.com</code>.</li>
+<li>Open <b>Preferences › Integrations</b>.</li>
+<li>Under <b>Access tokens</b>, create a new token and copy it.</li>
+<li>In VRM Toolbar choose <b>Account › Access token</b>, paste it and press <b>Sign in</b>.</li></ol>
+<h2>Email &amp; password</h2>
+<p>The alternative sign-in uses your VRM email and password. It does not work with accounts that have two-factor authentication, and Victron has deprecated password access for its APIs. Use a token when you can.</p>
+<h2>Where credentials are stored</h2>
+<p>Credentials are saved in your <b>login Keychain</b> under the service <code>world.walther.vrm-toolbar</code>. They are only sent to Victron’s servers. <b>Sign out</b> removes them from the Keychain.</p>
+<div class="note"><b>Keychain prompts</b>If macOS asks for your password after every rebuild, the app is signed ad hoc. Sign with a stable identity, see <a href="build.html">Build from source</a>.</div>
+<h2>Several installations</h2>
+<p>If your account has more than one installation, each display has an <b>Installation</b> picker, so you can mix values from a boat, a camper and a cabin.</p>
+
+<div class="pager"><a href="getting-started.html">← Getting started</a><a href="displays.html">Displays →</a></div></main></div><footer><span>VRM Toolbar is an independent open-source project. Not affiliated with or endorsed by Victron Energy. “Victron”, “VRM” and “Cerbo GX” are trademarks of their respective owners.</span>
+<span><a href="https://github.com/svenwal/VRM-Toolbar">Source on GitHub</a></span></footer></body></html>

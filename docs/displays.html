@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Displays · VRM Toolbar</title>
+<meta name="description" content="A display is one value, shown in the menu bar, the Dock icon or a floating window.">
+<meta name="theme-color" content="#080d1c">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head><body><header class="topbar glass">
+<a class="brand" href="index.html"><img src="assets/icon.png" alt="">VRM Toolbar</a>
+<nav><a class="hide-sm" href="index.html">Home</a><a class=" on" href="getting-started.html">Docs</a><a class="" href="https://github.com/svenwal/VRM-Toolbar">GitHub</a></nav>
+</header>
+<div class="docs"><aside class="side glass"><h5>Documentation</h5><a class="" href="getting-started.html"><span>🚀</span>Getting started</a><a class="" href="account.html"><span>🔑</span>Account & access token</a><a class="on" href="displays.html"><span>📊</span>Displays</a><a class="" href="windows.html"><span>🪟</span>Floating windows</a><a class="" href="live-and-history.html"><span>⚡</span>Live data & history</a><a class="" href="settings.html"><span>⚙️</span>General settings</a><a class="" href="build.html"><span>🛠</span>Build from source</a><a class="" href="troubleshooting.html"><span>🩺</span>Troubleshooting & privacy</a></aside>
+<main class="doc glass"><h1>Displays</h1><p class="lede">A display is one value, shown in the menu bar, the Dock icon or a floating window.</p>
+<h2>The Displays page</h2>
+<p>The list on the left is grouped by where each display appears: <b>Menu bar</b>, <b>Dock icon</b> and one group per floating window. Groups collapse. Hover a row to reveal move up/down arrows and a delete button, or drag rows to reorder them within their group. The editor on the right changes the selected display.</p>
+<h2>Targets</h2>
+<table><tr><th>Target</th><th>What you get</th></tr>
+<tr><td><b>Menu bar</b></td><td>One status item per display, with an optional SF Symbol in front and the value as text. Dimmed when the data is stale.</td></tr>
+<tr><td><b>Dock icon</b></td><td>The Dock tile renders up to three values over an electric-blue badge. The Dock icon only exists while at least one display uses it.</td></tr>
+<tr><td><b>Floating window</b></td><td>A translucent, always-on-top panel with any number of values. See <a href="windows.html">Floating windows</a>.</td></tr></table>
+<h2>Options</h2>
+<table><tr><th>Option</th><th>Effect</th></tr>
+<tr><td>Label</td><td>Overrides the name shown for the value.</td></tr>
+<tr><td>Unit</td><td>Replaces the unit VRM reports, for example <code>%</code> for a tank level.</td></tr>
+<tr><td>SF Symbol</td><td>Menu bar only. Any SF Symbols name, such as <code>bolt.fill</code> or <code>battery.100</code>.</td></tr>
+<tr><td>Hero value</td><td>Floating windows only. Marks the one big value in the Hero layout. Only one per window.</td></tr>
+<tr><td>Only show while active</td><td>Hides the display while the value is at or below a threshold. Perfect for shore power or AC input that should vanish when you are unplugged.</td></tr>
+<tr><td>Installation</td><td>Which of your installations the value comes from. Shown when you have more than one.</td></tr></table>
+<h2>Finding a value</h2>
+<p>The list shows every value your installation reports, with its current reading. Use the search field to filter. A ⚡ marks values delivered by the live stream.</p>
+<h2>Hover for history</h2>
+<p>Hover over a menu bar item or a value in a floating window to open a line chart of the last 24 hours with <b>min</b>, <b>max</b> and <b>average</b>. See <a href="live-and-history.html">Live data &amp; history</a>.</p>
+
+<div class="pager"><a href="account.html">← Account & access token</a><a href="windows.html">Floating windows →</a></div></main></div><footer><span>VRM Toolbar is an independent open-source project. Not affiliated with or endorsed by Victron Energy. “Victron”, “VRM” and “Cerbo GX” are trademarks of their respective owners.</span>
+<span><a href="https://github.com/svenwal/VRM-Toolbar">Source on GitHub</a></span></footer></body></html>

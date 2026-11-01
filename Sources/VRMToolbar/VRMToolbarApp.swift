@@ -9,12 +9,14 @@ final class AppModel {
     private var dock: DockTileController?
     private var floating: FloatingPanelController?
     private var hoverChart: HoverChartController?
+    private var widgets: WidgetPublisher?
 
     private init() { store = MetricStore(displays: displays) }
 
     func start() {
         statusItems = StatusItemController(store: store)
         dock = DockTileController(store: store)
+        widgets = WidgetPublisher(store: store)
         floating = FloatingPanelController(store: store)
         hoverChart = HoverChartController(store: store) { [weak self] source in
             switch source {

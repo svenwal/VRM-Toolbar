@@ -7,6 +7,10 @@ OUT = str(ROOT / "docs")
 
 # (version, date, {section: [items]}) — newest first
 CHANGELOG = [
+ ("0.2.0", "2026-11-01", {
+   "Added": ["Notification Center widgets: <b>Battery</b> (small, medium) with a state-of-charge ring and your other values, and <b>Values</b> (small, medium, large) mirroring your Displays list. See <a href=\"widgets.html\">Widgets</a>."],
+   "Changed": ["The app is now built together with an embedded widget extension. Rebuild with <code>./scripts/bundle.sh</code>."],
+ }),
  ("0.1.1", "2026-10-30", {
    "Added": ["Setting “Always show Dock icon” (General). The Dock icon is now visible by default, even when no display targets the Dock. Turn it off for a pure menu bar app."],
    "Fixed": ["Pasting (and copying, cutting, select all, undo) did not work in text fields such as the access token, because the app had no Edit menu."],
@@ -52,6 +56,7 @@ PAGES = [
  ("displays", "Displays", "📊"),
  ("windows", "Floating windows", "🪟"),
  ("live-and-history", "Live data & history", "⚡"),
+ ("widgets", "Widgets", "🧩"),
  ("settings", "General settings", "⚙️"),
  ("build", "Build from source", "🛠"),
  ("troubleshooting", "Troubleshooting & privacy", "🩺"),
@@ -162,6 +167,26 @@ doc("live-and-history", "Live data & history", "Values stream in the moment they
 <p>If no fresh data arrives for a while, menu bar items are dimmed so you do not mistake an old number for a current one.</p>
 ''')
 
+doc("widgets", "Widgets", "Glance at your system from Notification Center or the desktop.", '''
+<h2>Adding a widget</h2>
+<ol><li>Start VRM Toolbar at least once, so macOS discovers its widgets.</li>
+<li>Click the clock in the menu bar, scroll down and choose <b>Edit Widgets</b>. On macOS 14+ you can also right-click the desktop.</li>
+<li>Search for <b>VRM Toolbar</b>, pick a widget and size, and add it.</li></ol>
+<h2>Available widgets</h2>
+<table><tr><th>Widget</th><th>Sizes</th><th>Shows</th></tr>
+<tr><td><b>Battery</b></td><td>Small, Medium</td><td>A state-of-charge ring in the app’s green, amber and red. The medium size adds up to three of your other values.</td></tr>
+<tr><td><b>Values</b></td><td>Small, Medium, Large</td><td>The first 3, 4 or 8 values from your <a href="displays.html">Displays</a>, in the same order as the list, including each display’s label and unit.</td></tr></table>
+<p>Both use the dark, glowing look of the app, and the glow follows your charge level.</p>
+<h2>How fresh is the data?</h2>
+<p>The app hands its current values to the widgets and asks macOS to redraw them, at most about every 30 seconds. macOS decides when a widget is really redrawn, so it can lag behind the live menu bar. The time in the corner of the widget shows when the app last received data, and turns orange when the data is stale.</p>
+<p>Widgets only update while VRM Toolbar is running, so enable <a href="settings.html">Launch at login</a>. Without the app, they keep showing the last values.</p>
+<h2>Which values appear?</h2>
+<p>Widgets use the displays you already set up, no extra configuration. Displays hidden by <i>Only show while active</i> are hidden in widgets too. To change what a widget shows, reorder your displays.</p>
+<h2>Under the hood</h2>
+<p>Widget extensions are sandboxed and have no network access, so the app writes a small snapshot file into a shared app-group container. Your VRM credentials never leave the app.</p>
+<div class="note warn"><b>Self-built app</b>Widgets need the app to be code-signed. Build with an Apple Development identity (see <a href="build.html">Build from source</a>), and keep the app in a fixed place such as Applications.</div>
+''')
+
 doc("settings", "General settings", "Refresh interval, launch at login, and Dock behaviour.", '''
 <h2>Refresh every</h2>
 <p>How often the VRM API is polled: 30 seconds, 1, 2, 5 or 10 minutes. Streamed values update instantly regardless.</p>
@@ -206,7 +231,7 @@ doc("troubleshooting", "Troubleshooting & privacy", "Common problems, and exactl
 <h3>Nothing is live (no ⚡)</h3><p>The live stream needs an access token. Password sign-in only polls.</p>
 <h3>Password sign-in fails</h3><p>Accounts with two-factor authentication must use an access token.</p>
 <h3>Keychain asks for my password constantly</h3><p>Sign the app with a stable identity, see <a href="build.html">Build from source</a>.</p>
-<h3>The menu bar item disappeared</h3><p>Crowded menu bars (especially on notched Macs) hide overflow items. Remove other items or shorten labels.</p>
+<h3>The widgets are not listed</h3><p>Launch the app once from its final location, then reopen Edit Widgets. If they still do not show up, run <code>pluginkit -a /Applications/VRMToolbar.app/Contents/PlugIns/VRMWidget.appex</code>. Unsigned or ad-hoc signed builds may be rejected.</p>\n<h3>The menu bar item disappeared</h3><p>Crowded menu bars (especially on notched Macs) hide overflow items. Remove other items or shorten labels.</p>
 <h2>Privacy</h2>
 <ul><li>VRM Toolbar talks only to Victron’s services: the VRM API at <code>vrmapi.victronenergy.com</code> and the VRM MQTT broker at <code>webmqtt*.victronenergy.com</code>.</li>
 <li>No analytics, telemetry or third-party servers.</li>
@@ -257,7 +282,7 @@ home = head("VRM Toolbar — your Victron battery, always in sight", "A native M
 <p class="sub">Designed like the rest of macOS: translucent, calm and quick to read.</p>
 <div class="grid3">
 <div class="card glass"><div class="ico">⚡</div><h3>Live streaming</h3><p>Values arrive over VRM’s MQTT broker the moment they change. No waiting for the next poll.</p></div>
-<div class="card glass"><div class="ico">📍</div><h3>Menu bar, Dock &amp; windows</h3><p>Show any value as a menu bar item with an SF Symbol, on the Dock tile, or in floating panels.</p></div>
+<div class="card glass"><div class="ico">📍</div><h3>Everywhere you look</h3><p>Menu bar items, the Dock tile, floating panels and Notification Center widgets.</p></div>
 <div class="card glass"><div class="ico">🎨</div><h3>Four materials, three layouts</h3><p>Glass, Frosted, Solid or Neon. List, Tiles or Hero. Your accent, your typeface, your corners.</p></div>
 <div class="card glass"><div class="ico">📈</div><h3>Hover for history</h3><p>Hover any value for a 24-hour chart with min, max and average.</p></div>
 <div class="card glass"><div class="ico">🫥</div><h3>Show only when relevant</h3><p>Hide shore power when you are unplugged. Displays can disappear below a threshold you choose.</p></div>

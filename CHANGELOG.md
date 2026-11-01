@@ -2,6 +2,14 @@
 
 All notable changes to VRM Toolbar. Newest first.
 
+## 0.2.0 - 2026-11-01
+
+### Added
+- Notification Center widgets: <b>Battery</b> (small, medium) with a state-of-charge ring and your other values, and <b>Values</b> (small, medium, large) mirroring your Displays list. See <a href="widgets.html">Widgets</a>.
+
+### Changed
+- The app is now built together with an embedded widget extension. Rebuild with <code>./scripts/bundle.sh</code>.
+
 ## 0.1.1 - 2026-10-30
 
 ### Added

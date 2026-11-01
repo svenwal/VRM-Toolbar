@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widgets · VRM Toolbar</title>
+<meta name="description" content="Glance at your system from Notification Center or the desktop.">
+<meta name="theme-color" content="#080d1c">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+</head><body><header class="topbar glass">
+<a class="brand" href="index.html"><img src="assets/icon.png" alt="">VRM Toolbar</a>
+<nav><a class="hide-sm" href="index.html">Home</a><a class=" on" href="getting-started.html">Docs</a><a class="" href="changelog.html">Changelog</a><a class="" href="https://github.com/svenwal/VRM-Toolbar">GitHub</a></nav>
+</header>
+<div class="docs"><aside class="side glass"><h5>Documentation</h5><a class="" href="getting-started.html"><span>🚀</span>Getting started</a><a class="" href="account.html"><span>🔑</span>Account & access token</a><a class="" href="displays.html"><span>📊</span>Displays</a><a class="" href="windows.html"><span>🪟</span>Floating windows</a><a class="" href="live-and-history.html"><span>⚡</span>Live data & history</a><a class="on" href="widgets.html"><span>🧩</span>Widgets</a><a class="" href="settings.html"><span>⚙️</span>General settings</a><a class="" href="build.html"><span>🛠</span>Build from source</a><a class="" href="troubleshooting.html"><span>🩺</span>Troubleshooting & privacy</a></aside>
+<main class="doc glass"><h1>Widgets</h1><p class="lede">Glance at your system from Notification Center or the desktop.</p>
+<h2>Adding a widget</h2>
+<ol><li>Start VRM Toolbar at least once, so macOS discovers its widgets.</li>
+<li>Click the clock in the menu bar, scroll down and choose <b>Edit Widgets</b>. On macOS 14+ you can also right-click the desktop.</li>
+<li>Search for <b>VRM Toolbar</b>, pick a widget and size, and add it.</li></ol>
+<h2>Available widgets</h2>
+<table><tr><th>Widget</th><th>Sizes</th><th>Shows</th></tr>
+<tr><td><b>Battery</b></td><td>Small, Medium</td><td>A state-of-charge ring in the app’s green, amber and red. The medium size adds up to three of your other values.</td></tr>
+<tr><td><b>Values</b></td><td>Small, Medium, Large</td><td>The first 3, 4 or 8 values from your <a href="displays.html">Displays</a>, in the same order as the list, including each display’s label and unit.</td></tr></table>
+<p>Both use the dark, glowing look of the app, and the glow follows your charge level.</p>
+<h2>How fresh is the data?</h2>
+<p>The app hands its current values to the widgets and asks macOS to redraw them, at most about every 30 seconds. macOS decides when a widget is really redrawn, so it can lag behind the live menu bar. The time in the corner of the widget shows when the app last received data, and turns orange when the data is stale.</p>
+<p>Widgets only update while VRM Toolbar is running, so enable <a href="settings.html">Launch at login</a>. Without the app, they keep showing the last values.</p>
+<h2>Which values appear?</h2>
+<p>Widgets use the displays you already set up, no extra configuration. Displays hidden by <i>Only show while active</i> are hidden in widgets too. To change what a widget shows, reorder your displays.</p>
+<h2>Under the hood</h2>
+<p>Widget extensions are sandboxed and have no network access, so the app writes a small snapshot file into a shared app-group container. Your VRM credentials never leave the app.</p>
+<div class="note warn"><b>Self-built app</b>Widgets need the app to be code-signed. Build with an Apple Development identity (see <a href="build.html">Build from source</a>), and keep the app in a fixed place such as Applications.</div>
+
+<div class="pager"><a href="live-and-history.html">← Live data & history</a><a href="settings.html">General settings →</a></div></main></div><footer><span>VRM Toolbar is an independent open-source project. Not affiliated with or endorsed by Victron Energy. “Victron”, “VRM” and “Cerbo GX” are trademarks of their respective owners.</span>
+<span><a href="changelog.html">Changelog</a> · <a href="https://github.com/svenwal/VRM-Toolbar">Source on GitHub</a></span></footer></body></html>

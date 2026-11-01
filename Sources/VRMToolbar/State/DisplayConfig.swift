@@ -4,13 +4,14 @@ import Observation
 import SwiftUI
 
 enum DisplayTarget: String, Codable, CaseIterable, Identifiable {
-    case menuBar, dock, floating
+    case menuBar, dock, floating, widget
     var id: String { rawValue }
     var title: String {
         switch self {
         case .menuBar: "Menu bar"
         case .dock: "Dock icon"
         case .floating: "Floating window"
+        case .widget: "Widget"
         }
     }
     var symbol: String {
@@ -18,6 +19,7 @@ enum DisplayTarget: String, Codable, CaseIterable, Identifiable {
         case .menuBar: "menubar.rectangle"
         case .dock: "dock.rectangle"
         case .floating: "macwindow"
+        case .widget: "square.grid.2x2"
         }
     }
 }
@@ -40,6 +42,8 @@ struct DisplayItem: Codable, Identifiable, Hashable {
     var idleThreshold: Double?
     /// Which floating window shows this item (nil → the first window).
     var windowId: UUID?
+    /// Which widget set collects this item (nil → the first set).
+    var widgetId: UUID?
 }
 
 // MARK: - Floating window styling
@@ -147,18 +151,26 @@ struct FloatingWindowConfig: Codable, Identifiable, Hashable {
     var style = FloatingStyle()
 }
 
+/// A named collection of values that a Notification Center widget can show.
+struct WidgetSetConfig: Codable, Identifiable, Hashable {
+    var id = UUID()
+    var name: String
+}
+
 // MARK: - Store
 
 @Observable
 final class DisplayStore {
     var items: [DisplayItem] { didSet { save() } }
     var windows: [FloatingWindowConfig] { didSet { save() } }
+    var widgetSets: [WidgetSetConfig] { didSet { save() } }
     var refreshInterval: TimeInterval { didSet { UserDefaults.standard.set(refreshInterval, forKey: Self.intervalKey) } }
     /// Keep the Dock icon visible even when no display targets the Dock (default on).
     var alwaysShowDockIcon: Bool { didSet { UserDefaults.standard.set(alwaysShowDockIcon, forKey: Self.dockKey) } }
 
     private static let itemsKey = "displays.v1"
     private static let windowsKey = "floatingWindows.v1"
+    private static let widgetSetsKey = "widgetSets.v1"
     private static let intervalKey = "refreshInterval"
     private static let dockKey = "alwaysShowDockIcon"
     private static let legacyOpacityKey = "floatingOpacity"
@@ -180,6 +192,12 @@ final class DisplayStore {
             if let o = defaults.object(forKey: Self.legacyOpacityKey) as? Double { first.style.opacity = min(max(o, 0.1), 1) }
             self.windows = [first]
         }
+        if let data = defaults.data(forKey: Self.widgetSetsKey),
+           let sets = try? JSONDecoder().decode([WidgetSetConfig].self, from: data), !sets.isEmpty {
+            widgetSets = sets
+        } else {
+            widgetSets = [WidgetSetConfig(name: "Widget 1")]
+        }
         alwaysShowDockIcon = defaults.object(forKey: Self.dockKey) as? Bool ?? true
         let i = defaults.double(forKey: Self.intervalKey)
         refreshInterval = i == 0 ? 60 : min(max(i, 30), 600)
@@ -197,8 +215,22 @@ final class DisplayStore {
         }
     }
 
+    /// Items collected by `set`; unassigned items fall to the first set.
+    func items(inWidget set: WidgetSetConfig) -> [DisplayItem] {
+        let ids = Set(widgetSets.map(\.id))
+        return items.filter { item in
+            guard item.target == .widget else { return false }
+            if let w = item.widgetId, ids.contains(w) { return w == set.id }
+            return set.id == widgetSets.first?.id
+        }
+    }
+
     /// Items are ordered within the place they appear: menu bar, Dock, or one floating window.
     func groupKey(_ item: DisplayItem) -> String {
+        if item.target == .widget {
+            if let w = item.widgetId, widgetSets.contains(where: { $0.id == w }) { return w.uuidString }
+            return widgetSets.first?.id.uuidString ?? "widget"
+        }
         guard item.target == .floating else { return item.target.rawValue }
         if let w = item.windowId, windows.contains(where: { $0.id == w }) { return w.uuidString }
         return windows.first?.id.uuidString ?? "floating"
@@ -244,6 +276,25 @@ final class DisplayStore {
         return w
     }
 
+    @discardableResult
+    func addWidgetSet() -> WidgetSetConfig {
+        let w = WidgetSetConfig(name: "Widget \(widgetSets.count + 1)")
+        widgetSets.append(w)
+        return w
+    }
+
+    func moveWidgetSet(_ id: UUID, by offset: Int) {
+        guard let i = widgetSets.firstIndex(where: { $0.id == id }), widgetSets.indices.contains(i + offset) else { return }
+        widgetSets.swapAt(i, i + offset)
+    }
+
+    func removeWidgetSet(_ id: UUID) {
+        guard widgetSets.count > 1 else { return }
+        let fallback = widgetSets.first { $0.id != id }?.id
+        for i in items.indices where items[i].widgetId == id { items[i].widgetId = fallback }
+        widgetSets.removeAll { $0.id == id }
+    }
+
     func removeWindow(_ id: UUID) {
         guard windows.count > 1 else { return }
         // Items of the removed window move to the first remaining window.
@@ -256,5 +307,6 @@ final class DisplayStore {
         let defaults = UserDefaults.standard
         if let data = try? JSONEncoder().encode(items) { defaults.set(data, forKey: Self.itemsKey) }
         if let data = try? JSONEncoder().encode(windows) { defaults.set(data, forKey: Self.windowsKey) }
+        if let data = try? JSONEncoder().encode(widgetSets) { defaults.set(data, forKey: Self.widgetSetsKey) }
     }
 }

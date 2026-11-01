@@ -1,3 +1,4 @@
+import AppIntents
 import SwiftUI
 import VRMShared
 import WidgetKit
@@ -10,24 +11,59 @@ struct VRMWidgets: WidgetBundle {
     }
 }
 
+// MARK: - Configuration
+
+/// A widget set from the app's Widgets page, as offered in "Edit Widget".
+struct SetEntity: AppEntity {
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Widget set")
+    static let defaultQuery = SetQuery()
+
+    var id: String
+    var name: String
+
+    var displayRepresentation: DisplayRepresentation { DisplayRepresentation(title: "\(name)") }
+}
+
+struct SetQuery: EntityQuery {
+    private func all() -> [SetEntity] {
+        (SnapshotStore.read() ?? WidgetSnapshot()).sets.map { SetEntity(id: $0.id, name: $0.name) }
+    }
+    func entities(for identifiers: [String]) async throws -> [SetEntity] { all().filter { identifiers.contains($0.id) } }
+    func suggestedEntities() async throws -> [SetEntity] { all() }
+    func defaultResult() async -> SetEntity? { all().first }
+}
+
+struct SelectSetIntent: WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = "Choose values"
+    static let description = IntentDescription("Pick which widget set this widget shows. Sets are managed in VRM Toolbar › Widgets.")
+
+    @Parameter(title: "Widget set")
+    var set: SetEntity?
+}
+
 // MARK: - Timeline
 
 struct SnapshotEntry: TimelineEntry {
     let date: Date
     let snapshot: WidgetSnapshot
+    let set: WidgetSnapshot.ValueSet?
 }
 
-struct SnapshotProvider: TimelineProvider {
-    func placeholder(in context: Context) -> SnapshotEntry { SnapshotEntry(date: .now, snapshot: .sample) }
+struct SnapshotProvider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> SnapshotEntry { entry(.sample, nil) }
 
-    func getSnapshot(in context: Context, completion: @escaping (SnapshotEntry) -> Void) {
-        completion(SnapshotEntry(date: .now, snapshot: context.isPreview ? .sample : SnapshotStore.read() ?? WidgetSnapshot()))
+    func snapshot(for configuration: SelectSetIntent, in context: Context) async -> SnapshotEntry {
+        context.isPreview ? entry(.sample, nil) : entry(SnapshotStore.read() ?? WidgetSnapshot(), configuration.set?.id)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SnapshotEntry>) -> Void) {
-        let entry = SnapshotEntry(date: .now, snapshot: SnapshotStore.read() ?? WidgetSnapshot())
+    func timeline(for configuration: SelectSetIntent, in context: Context) async -> Timeline<SnapshotEntry> {
         // The app reloads timelines when values change; this is only the fallback.
-        completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(15 * 60))))
+        Timeline(entries: [entry(SnapshotStore.read() ?? WidgetSnapshot(), configuration.set?.id)],
+                 policy: .after(.now.addingTimeInterval(15 * 60)))
+    }
+
+    private func entry(_ snapshot: WidgetSnapshot, _ setId: String?) -> SnapshotEntry {
+        SnapshotEntry(date: .now, snapshot: snapshot, set: snapshot.set(id: setId))
     }
 }
 
@@ -35,22 +71,22 @@ struct SnapshotProvider: TimelineProvider {
 
 struct BatteryWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "world.walther.vrm-toolbar.battery", provider: SnapshotProvider()) { entry in
-            BatteryView(snapshot: entry.snapshot).vrmBackground(level: entry.snapshot.batteryLevel)
+        AppIntentConfiguration(kind: "world.walther.vrm-toolbar.battery", intent: SelectSetIntent.self, provider: SnapshotProvider()) { entry in
+            BatteryView(entry: entry).vrmBackground(level: entry.snapshot.batteryLevel)
         }
         .configurationDisplayName("Battery")
-        .description("State of charge as a ring, with your other values beside it.")
+        .description("State of charge as a ring, with the values of a widget set beside it.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
 struct ValuesWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "world.walther.vrm-toolbar.values", provider: SnapshotProvider()) { entry in
-            ValuesView(snapshot: entry.snapshot).vrmBackground(level: entry.snapshot.batteryLevel)
+        AppIntentConfiguration(kind: "world.walther.vrm-toolbar.values", intent: SelectSetIntent.self, provider: SnapshotProvider()) { entry in
+            ValuesView(entry: entry).vrmBackground(level: entry.snapshot.batteryLevel)
         }
         .configurationDisplayName("Values")
-        .description("The values from your Displays page, in the same order.")
+        .description("The values of a widget set. Edit the widget to choose which one.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
@@ -108,8 +144,10 @@ struct Ring: View {
 
 struct Footer: View {
     let snapshot: WidgetSnapshot
+    var name: String?
     var body: some View {
         HStack(spacing: 4) {
+            if let name { Text(name).lineLimit(1); Text("·") }
             Image(systemName: snapshot.isStale ? "exclamationmark.circle" : "clock")
             if let t = snapshot.updated { Text(t, style: .time) } else { Text("No data") }
         }
@@ -122,8 +160,8 @@ struct EmptyState: View {
     var body: some View {
         VStack(spacing: 6) {
             Image(systemName: "bolt.badge.plus").font(.title).foregroundStyle(.yellow)
-            Text(snapshot.isSignedIn ? "No displays yet" : "Not signed in").font(.headline)
-            Text(snapshot.isSignedIn ? "Add values in VRM Toolbar › Displays." : "Open VRM Toolbar to sign in.")
+            Text(snapshot.isSignedIn ? "No values yet" : "Not signed in").font(.headline)
+            Text(snapshot.isSignedIn ? "Choose Show in › Widget on the Displays page." : "Open VRM Toolbar to sign in.")
                 .font(.caption).foregroundStyle(.white.opacity(0.6)).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -145,10 +183,12 @@ struct ValueCell: View {
 
 struct BatteryView: View {
     @Environment(\.widgetFamily) private var family
-    let snapshot: WidgetSnapshot
+    let entry: SnapshotEntry
 
     var body: some View {
-        if snapshot.items.isEmpty && snapshot.batteryLevel == nil {
+        let snapshot = entry.snapshot
+        let items = entry.set?.items ?? []
+        if items.isEmpty && snapshot.batteryLevel == nil {
             EmptyState(snapshot: snapshot)
         } else {
             VStack(alignment: .leading, spacing: 6) {
@@ -161,12 +201,12 @@ struct BatteryView: View {
                     if family == .systemMedium {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Battery").font(.system(size: 15, weight: .semibold, design: .rounded))
-                            ForEach(snapshot.items.filter { !$0.title.localizedCaseInsensitiveContains("charge") && !$0.title.localizedCaseInsensitiveContains("soc") }.prefix(3)) { ValueCell(item: $0) }
+                            ForEach(items.prefix(3)) { ValueCell(item: $0) }
                             Spacer(minLength: 0)
                         }
                     }
                 }
-                if family == .systemMedium { Footer(snapshot: snapshot) }
+                if family == .systemMedium { Footer(snapshot: snapshot, name: entry.set?.name) }
             }
         }
     }
@@ -174,12 +214,13 @@ struct BatteryView: View {
 
 struct ValuesView: View {
     @Environment(\.widgetFamily) private var family
-    let snapshot: WidgetSnapshot
+    let entry: SnapshotEntry
 
     private var limit: Int { family == .systemSmall ? 3 : family == .systemMedium ? 4 : 8 }
 
     var body: some View {
-        if snapshot.items.isEmpty {
+        let snapshot = entry.snapshot
+        if (entry.set?.items ?? []).isEmpty {
             EmptyState(snapshot: snapshot)
         } else {
             VStack(alignment: .leading, spacing: 8) {
@@ -191,13 +232,13 @@ struct ValuesView: View {
                     }
                 }
                 Spacer(minLength: 0)
-                Footer(snapshot: snapshot)
+                Footer(snapshot: snapshot, name: family == .systemSmall ? nil : entry.set?.name)
             }
         }
     }
 
     @ViewBuilder
     private func cells(big: Bool) -> some View {
-        ForEach(snapshot.items.prefix(limit)) { ValueCell(item: $0, big: big) }
+        ForEach((entry.set?.items ?? []).prefix(limit)) { ValueCell(item: $0, big: big) }
     }
 }

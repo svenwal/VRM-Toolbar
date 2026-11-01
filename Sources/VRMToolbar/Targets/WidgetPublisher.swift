@@ -18,22 +18,16 @@ final class WidgetPublisher {
 
     private func capture() {
         let displays = store.displays
-        let windowNames = Dictionary(uniqueKeysWithValues: displays.windows.map { ($0.id, $0.name) })
-        let items = store.activeItems(displays.items).prefix(12).map { item -> WidgetSnapshot.Item in
-            let group: String
-            switch item.target {
-            case .menuBar: group = DisplayTarget.menuBar.title
-            case .dock: group = DisplayTarget.dock.title
-            case .floating:
-                let id = item.windowId.flatMap { windowNames[$0] != nil ? $0 : nil } ?? displays.windows.first?.id
-                group = id.flatMap { windowNames[$0] } ?? DisplayTarget.floating.title
+        let sets = displays.widgetSets.map { set in
+            let items = store.activeItems(displays.items(inWidget: set)).prefix(12).map { item in
+                WidgetSnapshot.Item(id: item.id.uuidString, title: item.title(in: store), value: store.metric(for: item)?.formatted ?? "…")
             }
-            return .init(id: item.id.uuidString, title: item.title(in: store), value: store.metric(for: item)?.formatted ?? "…", group: group)
+            return WidgetSnapshot.ValueSet(id: set.id.uuidString, name: set.name, items: Array(items))
         }
         let isSignedIn: Bool
         if case .notConfigured = store.status { isSignedIn = false } else { isSignedIn = true }
         pending = WidgetSnapshot(updated: store.lastUpdate, isSignedIn: isSignedIn, isStale: store.isStale,
-                                 batteryLevel: store.batteryLevel, items: Array(items))
+                                 batteryLevel: store.batteryLevel, sets: sets)
         // Streamed values change constantly; coalesce them into one write every few seconds.
         guard flushTask == nil else { return }
         flushTask = Task { [weak self] in

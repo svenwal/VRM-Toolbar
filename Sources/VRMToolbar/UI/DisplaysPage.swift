@@ -29,12 +29,16 @@ struct DisplaysPage: View {
                 result.append(ItemGroup(id: w.id.uuidString, title: w.name, symbol: DisplayTarget.floating.symbol, tint: w.style.tint.color, items: items))
             }
         }
+        for set in displays.widgetSets {
+            let items = displays.items(inWidget: set)
+            if !items.isEmpty { result.append(ItemGroup(id: set.id.uuidString, title: set.name, symbol: DisplayTarget.widget.symbol, items: items)) }
+        }
         return result
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            PageHeader(title: "Displays", subtitle: "Each display shows one value in the menu bar, Dock or a floating window")
+            PageHeader(title: "Displays", subtitle: "Each display shows one value in the menu bar, Dock, a floating window or a widget")
             HStack(alignment: .top, spacing: 16) {
                 VStack(spacing: 8) {
                     Button { add() } label: { Label("Add display", systemImage: "plus").frame(maxWidth: .infinity) }
@@ -196,6 +200,13 @@ struct DisplayEditor: View {
                     get: { item.windowId ?? displays.windows.first?.id ?? UUID() },
                     set: { item.windowId = $0 })) {
                     ForEach(displays.windows) { Text($0.name).tag($0.id) }
+                }
+            }
+            if item.target == .widget {
+                Picker("Widget", selection: Binding(
+                    get: { item.widgetId ?? displays.widgetSets.first?.id ?? UUID() },
+                    set: { item.widgetId = $0 })) {
+                    ForEach(displays.widgetSets) { Text($0.name).tag($0.id) }
                 }
             }
             if item.target == .floating {
